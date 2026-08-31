@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://prathikbg27-eng.github.io/Amma-healing-center/sitemap.xml
