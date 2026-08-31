@@ -8,10 +8,14 @@ const SITE_CONFIG = {
   category: "Holistic Healing & Wellness Center",
   tagline: "Natural Healing. Better Wellbeing.",
   
-  // Contact & Location Details (Editable)
-  phoneDisplay: "+91 98765 43210", // Display phone number placeholder
-  phoneCall: "+919876543210",       // Tel link format
-  whatsappNumber: "919876543210",   // WhatsApp international format without '+'
+  // Contact & Location Details
+  phoneDisplay: "+91 97311 38761 / +91 98805 02058",
+  phone1Display: "+91 97311 38761",
+  phone2Display: "+91 98805 02058",
+  phoneCall: "+919731138761",       // Primary tel link format
+  phoneCallSecondary: "+919880502058", // Secondary tel link format
+  whatsappNumber: "919731138761",   // Primary WhatsApp format
+  whatsappNumber2: "919880502058",  // Secondary WhatsApp format
   email: "contact@ammahealingcenter.com",
   
   location: {

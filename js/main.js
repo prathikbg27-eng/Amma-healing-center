@@ -35,8 +35,11 @@ function injectConfigData() {
 
   // WhatsApp elements
   const defaultWaText = encodeURIComponent(`Hello Amma Healing Centerr, I would like to inquire about holistic wellness therapies / numerology guidance in Mysuru.`);
-  document.querySelectorAll('.js-whatsapp-link').forEach(el => {
+  document.querySelectorAll('.js-whatsapp-link, .js-whatsapp-link-1').forEach(el => {
     el.setAttribute('href', `https://wa.me/${SITE_CONFIG.whatsappNumber}?text=${defaultWaText}`);
+  });
+  document.querySelectorAll('.js-whatsapp-link-2').forEach(el => {
+    el.setAttribute('href', `https://wa.me/${SITE_CONFIG.whatsappNumber2}?text=${defaultWaText}`);
   });
 
   // Address & Maps elements
@@ -273,7 +276,9 @@ function initBookingForm() {
   const dateInput = document.getElementById('bookDate');
   if (dateInput) {
     const today = new Date().toISOString().split('T')[0];
-    dateInput.setAttribute('min', today);
+    dateInput.addEventListener('focus', () => {
+      dateInput.setAttribute('min', today);
+    });
   }
 
   form.addEventListener('submit', (e) => {
@@ -302,7 +307,8 @@ function initBookingForm() {
     waMessage += `\n_Submitted via Amma Healing Centerr Website_`;
 
     const encoded = encodeURIComponent(waMessage);
-    const waUrl = `https://wa.me/${SITE_CONFIG.whatsappNumber}?text=${encoded}`;
+    const waUrl1 = `https://wa.me/${SITE_CONFIG.whatsappNumber}?text=${encoded}`;
+    const waUrl2 = `https://wa.me/${SITE_CONFIG.whatsappNumber2}?text=${encoded}`;
 
     // Update confirmation modal
     if (confirmSummary) {
@@ -316,11 +322,17 @@ function initBookingForm() {
       `;
     }
 
-    if (confirmWhatsAppBtn) {
-      confirmWhatsAppBtn.href = waUrl;
-      confirmWhatsAppBtn.onclick = () => {
-        closeAllModals();
-      };
+    const confirmWhatsAppBtn1 = document.getElementById('confirmWhatsAppBtn1') || document.getElementById('confirmWhatsAppBtn');
+    const confirmWhatsAppBtn2 = document.getElementById('confirmWhatsAppBtn2');
+
+    if (confirmWhatsAppBtn1) {
+      confirmWhatsAppBtn1.href = waUrl1;
+      confirmWhatsAppBtn1.onclick = () => closeAllModals();
+    }
+
+    if (confirmWhatsAppBtn2) {
+      confirmWhatsAppBtn2.href = waUrl2;
+      confirmWhatsAppBtn2.onclick = () => closeAllModals();
     }
 
     if (confirmCopyBtn) {
