@@ -15,6 +15,7 @@ function initApp() {
   initConcernInteractions();
   initNumerologyCalculator();
   initBookingForm();
+  initUnifiedBookingModal();
   initModalCloseHandlers();
 }
 
@@ -153,6 +154,252 @@ function initScrollAnimations() {
 }
 
 /**
+ * Unified Appointment Booking Modal
+ */
+function initUnifiedBookingModal() {
+  const modalOverlay = document.getElementById('bookingModal');
+  const formView = document.getElementById('bookingFormView');
+  const successView = document.getElementById('bookingSuccessView');
+  const form = document.getElementById('modalAppointmentForm');
+  const dateInput = document.getElementById('modalBookDate');
+  const alertBox = document.getElementById('bookingAlertBox');
+  const alertMsg = document.getElementById('bookingAlertMsg');
+  const submitBtn = document.getElementById('modalSubmitBtn');
+  const submitSpinner = document.getElementById('modalSubmitSpinner');
+  const submitText = document.getElementById('modalSubmitText');
+
+  // Set min date to today
+  if (dateInput) {
+    const today = new Date().toISOString().split('T')[0];
+    dateInput.setAttribute('min', today);
+    // Set default value to today or tomorrow
+    dateInput.value = today;
+  }
+
+  // Global Open Booking Modal Function
+  window.openBookingModal = function(therapyName, concernText) {
+    if (!modalOverlay) return;
+
+    // Reset views
+    if (formView) formView.style.display = 'block';
+    if (successView) successView.classList.remove('active');
+    if (alertBox) alertBox.classList.remove('active');
+
+    // Reset form or prefill
+    if (therapyName) {
+      const therapySelect = document.getElementById('modalBookTherapy');
+      if (therapySelect) {
+        let matched = false;
+        for (let i = 0; i < therapySelect.options.length; i++) {
+          if (therapySelect.options[i].value.toLowerCase() === therapyName.toLowerCase() ||
+              therapySelect.options[i].text.toLowerCase().includes(therapyName.toLowerCase())) {
+            therapySelect.selectedIndex = i;
+            matched = true;
+            break;
+          }
+        }
+        if (!matched && therapySelect.options.length > 1) {
+          therapySelect.selectedIndex = 1;
+        }
+      }
+    }
+
+    if (concernText) {
+      const concernField = document.getElementById('modalBookConcern');
+      if (concernField) {
+        concernField.value = concernText;
+      }
+    }
+
+    modalOverlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    
+    // Focus first input
+    setTimeout(() => {
+      const nameInput = document.getElementById('modalBookName');
+      if (nameInput) nameInput.focus();
+    }, 150);
+  };
+
+  // Wire all generic Book Appointment buttons across the site
+  document.querySelectorAll('a[href="#book"], .js-open-booking-modal').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      // If clicked inside header/hero/footer/mobile bar, open modal directly
+      e.preventDefault();
+      window.openBookingModal();
+    });
+  });
+
+  // Modal Form Submission Handler
+  if (form) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (alertBox) alertBox.classList.remove('active');
+
+      const name = (document.getElementById('modalBookName').value || '').trim();
+      const phone = (document.getElementById('modalBookPhone').value || '').trim();
+      const therapy = (document.getElementById('modalBookTherapy').value || '').trim();
+      const date = (document.getElementById('modalBookDate').value || '').trim();
+      const time = (document.getElementById('modalBookTime').value || '').trim();
+      const concern = (document.getElementById('modalBookConcern').value || '').trim();
+
+      // 1. Frontend Validations
+      if (!name || name.length < 2) {
+        showAlert('Please enter your full name (at least 2 characters).');
+        document.getElementById('modalBookName').focus();
+        return;
+      }
+
+      if (window.AmmaSupabase) {
+        const phoneVal = window.AmmaSupabase.validateIndianPhone(phone);
+        if (!phoneVal.isValid) {
+          showAlert(phoneVal.message);
+          document.getElementById('modalBookPhone').focus();
+          return;
+        }
+
+        if (!therapy) {
+          showAlert('Please select a therapy or consultation.');
+          document.getElementById('modalBookTherapy').focus();
+          return;
+        }
+
+        const dateVal = window.AmmaSupabase.validateAppointmentDate(date);
+        if (!dateVal.isValid) {
+          showAlert(dateVal.message);
+          document.getElementById('modalBookDate').focus();
+          return;
+        }
+
+        if (!time) {
+          showAlert('Please select your preferred time slot.');
+          document.getElementById('modalBookTime').focus();
+          return;
+        }
+      }
+
+      // 2. Set Loading State
+      setLoading(true);
+
+      try {
+        const appointmentData = {
+          full_name: name,
+          phone: phone,
+          therapy: therapy,
+          appointment_date: date,
+          preferred_time: time,
+          concern: concern
+        };
+
+        const result = window.AmmaSupabase
+          ? await window.AmmaSupabase.submitAppointment(appointmentData)
+          : { success: true, data: appointmentData };
+
+        if (!result.success) {
+          setLoading(false);
+          showAlert(result.error || 'Failed to submit appointment. Please try again.');
+          return;
+        }
+
+        // 3. Show Success State
+        showSuccessView(result.data || appointmentData);
+        form.reset();
+      } catch (err) {
+        console.error('Submission error:', err);
+        setLoading(false);
+        showAlert('An unexpected error occurred. Please call or WhatsApp us directly.');
+      }
+    });
+  }
+
+  function showAlert(message) {
+    if (alertBox && alertMsg) {
+      alertMsg.textContent = message;
+      alertBox.classList.add('active');
+    } else {
+      alert(message);
+    }
+  }
+
+  function setLoading(isLoading) {
+    if (!submitBtn) return;
+    if (isLoading) {
+      submitBtn.classList.add('loading');
+      if (submitText) submitText.textContent = 'Scheduling your appointment...';
+    } else {
+      submitBtn.classList.remove('loading');
+      if (submitText) submitText.textContent = 'Confirm & Schedule Appointment';
+    }
+  }
+
+  function showSuccessView(data) {
+    setLoading(false);
+    if (formView) formView.style.display = 'none';
+    if (successView) successView.classList.add('active');
+
+    // Build standard WhatsApp Message as strictly required:
+    const waMessage = `Hello Amma Healing Center,\n\nI would like to book an appointment.\n\nName: ${data.full_name}\nPhone: ${data.phone}\nTherapy: ${data.therapy}\nPreferred Date: ${data.appointment_date}\nPreferred Time: ${data.preferred_time}\n\nConcern:\n${data.concern || 'None specified'}\n\nThank you.`;
+
+    const encodedMsg = encodeURIComponent(waMessage);
+    const waNumber = (typeof SITE_CONFIG !== 'undefined' && SITE_CONFIG.whatsappNumber) ? SITE_CONFIG.whatsappNumber : '919731138761';
+    const waUrl = `https://wa.me/${waNumber}?text=${encodedMsg}`;
+
+    // Populate Summary Card
+    const summaryCard = document.getElementById('modalSuccessSummaryCard');
+    if (summaryCard) {
+      summaryCard.innerHTML = `
+        <div class="summary-row">
+          <span class="summary-label">Customer Name</span>
+          <span class="summary-value">${escapeHtml(data.full_name)}</span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-label">Phone</span>
+          <span class="summary-value">${escapeHtml(data.phone)}</span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-label">Therapy</span>
+          <span class="summary-value">${escapeHtml(data.therapy)}</span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-label">Date & Time</span>
+          <span class="summary-value">${escapeHtml(data.appointment_date)} (${escapeHtml(data.preferred_time)})</span>
+        </div>
+        ${data.concern && data.concern !== 'None specified' ? `
+        <div class="summary-row">
+          <span class="summary-label">Concern</span>
+          <span class="summary-value" style="max-width: 60%;">${escapeHtml(data.concern)}</span>
+        </div>` : ''}
+      `;
+    }
+
+    // Set WhatsApp Button
+    const waBtn = document.getElementById('modalSuccessWhatsAppBtn');
+    if (waBtn) {
+      waBtn.href = waUrl;
+    }
+
+    // Set Copy Button
+    const copyBtn = document.getElementById('modalCopyDetailsBtn');
+    if (copyBtn) {
+      copyBtn.onclick = () => {
+        navigator.clipboard.writeText(waMessage).then(() => {
+          const span = copyBtn.querySelector('span');
+          if (span) {
+            span.textContent = 'Copied!';
+            setTimeout(() => { span.textContent = 'Copy Details'; }, 2500);
+          }
+        });
+      };
+    }
+
+    // Re-initialize any dynamic icons
+    if (window.lucide && typeof window.lucide.createIcons === 'function') {
+      window.lucide.createIcons();
+    }
+  }
+}
+
+/**
  * Therapy Detail Modals
  */
 function initTherapyModals() {
@@ -187,7 +434,7 @@ function initTherapyModals() {
 
     modalBookBtn.onclick = () => {
       closeAllModals();
-      selectServiceAndScroll(therapy.name);
+      window.openBookingModal(therapy.name);
     };
 
     modalOverlay.classList.add('active');
@@ -196,44 +443,19 @@ function initTherapyModals() {
 }
 
 /**
- * Concern cards click to pre-fill inquiry
+ * Concern cards click to pre-fill booking modal
  */
 function initConcernInteractions() {
   window.selectConcernAndBook = function(concernName) {
-    const serviceSelect = document.getElementById('bookService');
-    const messageField = document.getElementById('bookMessage');
-    const bookingSection = document.getElementById('book');
-
-    if (messageField) {
-      messageField.value = `I would like holistic wellness guidance regarding: ${concernName}.`;
-    }
-
-    if (bookingSection) {
-      bookingSection.scrollIntoView({ behavior: 'smooth' });
-    }
+    window.openBookingModal('', `I would like holistic wellness guidance regarding: ${concernName}.`);
   };
 }
 
 /**
- * Helper to select service and smoothly scroll to booking
+ * Helper to select service and open booking modal
  */
 function selectServiceAndScroll(serviceName) {
-  const serviceSelect = document.getElementById('bookService');
-  const bookingSection = document.getElementById('book');
-
-  if (serviceSelect) {
-    // Attempt to match dropdown option
-    for (let i = 0; i < serviceSelect.options.length; i++) {
-      if (serviceSelect.options[i].text.toLowerCase().includes(serviceName.toLowerCase())) {
-        serviceSelect.selectedIndex = i;
-        break;
-      }
-    }
-  }
-
-  if (bookingSection) {
-    bookingSection.scrollIntoView({ behavior: 'smooth' });
-  }
+  window.openBookingModal(serviceName);
 }
 
 /**
@@ -249,30 +471,25 @@ function initNumerologyCalculator() {
     const dob = document.getElementById('numDob').value;
     const serviceType = document.getElementById('numServiceType').value;
 
-    let inquiryText = `Hello Amma Healing Centerr, I would like to inquire about Numerology Guidance.\n`;
+    let inquiryText = `Hello Amma Healing Center,\n\nI would like to inquire about Numerology Guidance.\n`;
     if (name) inquiryText += `Name: ${name}\n`;
     if (dob) inquiryText += `Date of Birth: ${dob}\n`;
-    inquiryText += `Area of Guidance: ${serviceType}\n`;
+    inquiryText += `Area of Guidance: ${serviceType}\n\nThank you.`;
 
     const encoded = encodeURIComponent(inquiryText);
-    const waUrl = `https://wa.me/${SITE_CONFIG.whatsappNumber}?text=${encoded}`;
+    const waNumber = (typeof SITE_CONFIG !== 'undefined' && SITE_CONFIG.whatsappNumber) ? SITE_CONFIG.whatsappNumber : '919731138761';
+    const waUrl = `https://wa.me/${waNumber}?text=${encoded}`;
     window.open(waUrl, '_blank');
   });
 }
 
 /**
- * Appointment Booking Form submission & confirmation modal
+ * Inline Booking Form in #book section (syncs with unified booking)
  */
 function initBookingForm() {
   const form = document.getElementById('appointmentForm');
-  const confirmModal = document.getElementById('confirmationModal');
-  const confirmSummary = document.getElementById('confirmSummaryText');
-  const confirmWhatsAppBtn = document.getElementById('confirmWhatsAppBtn');
-  const confirmCopyBtn = document.getElementById('confirmCopyBtn');
-
   if (!form) return;
 
-  // Set min date for datepicker to today
   const dateInput = document.getElementById('bookDate');
   if (dateInput) {
     const today = new Date().toISOString().split('T')[0];
@@ -283,76 +500,20 @@ function initBookingForm() {
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
+    const name = document.getElementById('bookName') ? document.getElementById('bookName').value.trim() : '';
+    const phone = document.getElementById('bookPhone') ? document.getElementById('bookPhone').value.trim() : '';
+    const service = document.getElementById('bookService') ? document.getElementById('bookService').value : '';
+    const message = document.getElementById('bookMessage') ? document.getElementById('bookMessage').value.trim() : '';
 
-    const name = document.getElementById('bookName').value.trim();
-    const phone = document.getElementById('bookPhone').value.trim();
-    const date = document.getElementById('bookDate').value;
-    const time = document.getElementById('bookTime').value;
-    const service = document.getElementById('bookService').value;
-    const message = document.getElementById('bookMessage').value.trim();
-
-    if (!name || !phone) {
-      alert('Please provide your name and phone number.');
-      return;
+    window.openBookingModal(service, message);
+    if (name) {
+      const modalName = document.getElementById('modalBookName');
+      if (modalName) modalName.value = name;
     }
-
-    // Format neat message
-    let waMessage = `*New Appointment Inquiry - Amma Healing Centerr*\n\n`;
-    waMessage += `👤 *Name:* ${name}\n`;
-    waMessage += `📞 *Phone:* ${phone}\n`;
-    if (date) waMessage += `📅 *Preferred Date:* ${date}\n`;
-    if (time) waMessage += `⏰ *Preferred Time:* ${time}\n`;
-    waMessage += `🌿 *Service:* ${service}\n`;
-    if (message) waMessage += `💬 *Note / Concern:* ${message}\n`;
-    waMessage += `\n_Submitted via Amma Healing Centerr Website_`;
-
-    const encoded = encodeURIComponent(waMessage);
-    const waUrl1 = `https://wa.me/${SITE_CONFIG.whatsappNumber}?text=${encoded}`;
-    const waUrl2 = `https://wa.me/${SITE_CONFIG.whatsappNumber2}?text=${encoded}`;
-
-    // Update confirmation modal
-    if (confirmSummary) {
-      confirmSummary.innerHTML = `
-        <p><strong>Name:</strong> ${escapeHtml(name)}</p>
-        <p><strong>Phone:</strong> ${escapeHtml(phone)}</p>
-        <p><strong>Service:</strong> ${escapeHtml(service)}</p>
-        ${date ? `<p><strong>Preferred Date:</strong> ${escapeHtml(date)}</p>` : ''}
-        ${time ? `<p><strong>Preferred Time:</strong> ${escapeHtml(time)}</p>` : ''}
-        ${message ? `<p><strong>Concern/Note:</strong> ${escapeHtml(message)}</p>` : ''}
-      `;
+    if (phone) {
+      const modalPhone = document.getElementById('modalBookPhone');
+      if (modalPhone) modalPhone.value = phone;
     }
-
-    const confirmWhatsAppBtn1 = document.getElementById('confirmWhatsAppBtn1') || document.getElementById('confirmWhatsAppBtn');
-    const confirmWhatsAppBtn2 = document.getElementById('confirmWhatsAppBtn2');
-
-    if (confirmWhatsAppBtn1) {
-      confirmWhatsAppBtn1.href = waUrl1;
-      confirmWhatsAppBtn1.onclick = () => closeAllModals();
-    }
-
-    if (confirmWhatsAppBtn2) {
-      confirmWhatsAppBtn2.href = waUrl2;
-      confirmWhatsAppBtn2.onclick = () => closeAllModals();
-    }
-
-    if (confirmCopyBtn) {
-      confirmCopyBtn.onclick = () => {
-        navigator.clipboard.writeText(waMessage).then(() => {
-          confirmCopyBtn.textContent = 'Copied to Clipboard!';
-          setTimeout(() => {
-            confirmCopyBtn.textContent = 'Copy Details';
-          }, 2500);
-        });
-      };
-    }
-
-    // Show Confirmation Modal
-    if (confirmModal) {
-      confirmModal.classList.add('active');
-      document.body.style.overflow = 'hidden';
-    }
-
-    form.reset();
   });
 }
 
@@ -390,7 +551,9 @@ function closeAllModals() {
 }
 
 function escapeHtml(string) {
+  if (!string) return '';
   const div = document.createElement('div');
   div.textContent = string;
   return div.innerHTML;
 }
+

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Portal | Amma Healing Center</title>
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#173627">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="admin.css">
+  <link rel="stylesheet" href="/admin/admin.css">
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Supabase JS Client CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+
+<body>
+
+  <div class="admin-auth-wrapper">
+    <div class="admin-login-card">
+      <div class="admin-login-header">
+        <div class="admin-logo-symbol">A</div>
+        <h1>Amma Healing Center</h1>
+        <p>Admin Portal</p>
+      </div>
+
+      <!-- Professional Alert Area -->
+      <div id="adminLoginAlert" class="admin-alert admin-alert-error" role="alert">
+        <i data-lucide="alert-circle" style="width: 18px; height: 18px; flex-shrink: 0; margin-top: 2px;"></i>
+        <span id="adminLoginAlertMsg">Invalid credentials.</span>
+      </div>
+
+      <form id="adminLoginForm" novalidate>
+        <div class="admin-form-group">
+          <label for="email">Email</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            class="admin-form-input"
+            placeholder="admin@ammahealingcenter.com"
+            required
+            autocomplete="username"
+          >
+        </div>
+
+        <div class="admin-form-group">
+          <label for="password">Password</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            class="admin-form-input"
+            placeholder="Enter password"
+            required
+            autocomplete="current-password"
+          >
+        </div>
+
+        <button type="submit" id="adminLoginBtn" class="admin-btn-primary" style="margin-top: 8px;">
+          <i data-lucide="log-in" style="width: 18px; height: 18px;"></i>
+          <span>Sign In</span>
+        </button>
+      </form>
+
+      <div class="admin-login-footer">
+        <a href="../index.html">
+          <span>← Back to Main Website</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts with relative and root fallbacks -->
+  <script src="../js/config.js"></script>
+  <script src="/js/config.js"></script>
+  <script src="../js/supabase-client.js"></script>
+  <script src="/js/supabase-client.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      if (window.lucide) window.lucide.createIcons();
+
+      const form = document.getElementById('adminLoginForm');
+      const alertBox = document.getElementById('adminLoginAlert');
+      const alertMsg = document.getElementById('adminLoginAlertMsg');
+      const submitBtn = document.getElementById('adminLoginBtn');
+
+      function showAlert(msg, isWarning = false) {
+        if (!alertBox || !alertMsg) return;
+        alertMsg.textContent = msg;
+        alertBox.className = 'admin-alert ' + (isWarning ? 'admin-alert-warning active' : 'admin-alert-error active');
+        if (window.lucide) window.lucide.createIcons();
+      }
+
+      // Check if Supabase client is configured
+      if (!window.AmmaSupabase || !window.AmmaSupabase.isConfigured()) {
+        showAlert('Supabase is not configured yet. Please configure SUPABASE_URL and SUPABASE_ANON_KEY in js/config.js to enable admin login.', true);
+      }
+
+      // Check if already authenticated
+      if (window.AmmaSupabase) {
+        try {
+          const { user } = await window.AmmaSupabase.getAdminUser();
+          if (user) {
+            // Already logged in -> redirect to dashboard
+            window.location.href = 'dashboard.html';
+            return;
+          }
+        } catch (e) {}
+      }
+
+      // Handle Login Form Submit
+      if (form) {
+        form.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          alertBox.classList.remove('active');
+
+          const emailInput = document.getElementById("email") || document.getElementById("adminEmail");
+          const passwordInput = document.getElementById("password") || document.getElementById("adminPassword");
+
+          const email = emailInput ? emailInput.value.trim() : "";
+          const password = passwordInput ? passwordInput.value : "";
+
+          if (!email || !password) {
+            showAlert('Please enter both email and password.');
+            return;
+          }
+
+          if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = 'Signing In...';
+          }
+
+          try {
+            const result = await window.AmmaSupabase.adminSignIn(email, password);
+
+            if (!result.success) {
+              if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i data-lucide="log-in" style="width: 18px; height: 18px;"></i><span>Sign In</span>';
+              }
+              showAlert(result.error || 'Authentication failed. Please check your credentials.');
+              return;
+            }
+
+            // Redirect to dashboard
+            window.location.href = 'dashboard.html';
+          } catch (err) {
+            if (submitBtn) {
+              submitBtn.disabled = false;
+              submitBtn.innerHTML = '<i data-lucide="log-in" style="width: 18px; height: 18px;"></i><span>Sign In</span>';
+            }
+            showAlert('An unexpected error occurred during sign in. Please try again.');
+          }
+        });
+      }
+    });
+  </script>
+</body>
+
+</html>

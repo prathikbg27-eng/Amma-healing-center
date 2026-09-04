@@ -7,17 +7,38 @@ const SITE_CONFIG = {
   businessName: "Amma Healing Centerr",
   category: "Holistic Healing & Wellness Center",
   tagline: "Natural Healing. Better Wellbeing.",
-  
+
+  // Supabase Configuration (Replace with your Supabase Project values in production)
+  supabaseUrl: (typeof window !== 'undefined' && window.__ENV_SUPABASE_URL) || "https://ewsmhwrculcridwqknid.supabase.co",
+  supabaseAnonKey: (typeof window !== 'undefined' && window.__ENV_SUPABASE_ANON_KEY) || "sb_publishable_ZiSUek73xeZYNGGGq9unwg_-Zvvjhns",
+
   // Contact & Location Details
   phoneDisplay: "+91 97311 38761 / +91 98805 02058",
   phone1Display: "+91 97311 38761",
   phone2Display: "+91 98805 02058",
   phoneCall: "+919731138761",       // Primary tel link format
   phoneCallSecondary: "+919880502058", // Secondary tel link format
-  whatsappNumber: "919731138761",   // Primary WhatsApp format
-  whatsappNumber2: "919880502058",  // Secondary WhatsApp format
-  email: "contact@ammahealingcenter.com",
-  
+  whatsappNumber: "919731138761",   // Primary WhatsApp business number
+  whatsappNumber2: "919880502058",  // Secondary WhatsApp business number
+  email: "ammahealingcenter@2026",
+
+  // Standard Booking Therapies and Slots
+  bookingTherapies: [
+    "Neurotherapy",
+    "Marma Therapy",
+    "Acupressure",
+    "Color Therapy",
+    "Auricular Therapy",
+    "Numerology Consultation",
+    "General Wellness Consultation"
+  ],
+  bookingTimeSlots: [
+    "Morning (9:00 AM - 12:00 PM)",
+    "Afternoon (12:00 PM - 4:00 PM)",
+    "Evening (4:00 PM - 7:30 PM)",
+    "Flexible / Any Time"
+  ],
+
   location: {
     street: "1st Cross Rd, Agrahara, KR Mohalla, Rahmania Mohalla",
     city: "Mysuru",
@@ -28,7 +49,7 @@ const SITE_CONFIG = {
     googleMapsEmbedUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3898.1189498205467!2d76.6495!3d12.3025!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3baf703ec0f0c001%3A0x0!2sAgrahara%2C%20KR%20Mohalla%2C%20Mysuru%2C%20Karnataka%20570004!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin",
     googleMapsDirectionsUrl: "https://maps.google.com/?q=1st+Cross+Rd,+Agrahara,+KR+Mohalla,+Rahmania+Mohalla,+Mysuru,+Karnataka+570004"
   },
-  
+
   // Working Hours (Editable)
   openingHours: {
     weekdays: "Monday – Saturday: 9:00 AM – 7:30 PM",

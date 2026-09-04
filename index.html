@@ -29,6 +29,9 @@
   <!-- Lucide Icons CDN for crisp clean vector icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
 
+  <!-- Supabase JS Client CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <!-- Schema.org JSON-LD Structured Data for LocalBusiness -->
   <script type="application/ld+json">
   {
@@ -1410,44 +1413,130 @@
   </div>
 
   <!-- ==========================================
-       MODAL 2: APPOINTMENT CONFIRMATION MODAL
+       MODAL 2: REUSABLE APPOINTMENT BOOKING MODAL
        ========================================== -->
-  <div class="modal-overlay" id="confirmationModal" role="dialog" aria-modal="true" aria-labelledby="confirmModalTitle">
-    <div class="modal-content" style="max-width: 520px; text-align: center;">
-      <button class="modal-close js-modal-close" aria-label="Close dialog">&times;</button>
+  <div class="modal-overlay" id="bookingModal" role="dialog" aria-modal="true" aria-labelledby="bookingModalTitle">
+    <div class="modal-content booking-modal-dialog">
+      <button class="modal-close js-modal-close" aria-label="Close booking modal">&times;</button>
 
-      <div
-        style="width: 64px; height: 64px; background: var(--color-sage-light); color: var(--color-forest); border-radius: var(--radius-full); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; font-size: 1.8rem;">
-        ✓
+      <!-- Form View -->
+      <div id="bookingFormView">
+        <div class="booking-modal-header">
+          <div class="badge-eyebrow">
+            <i data-lucide="calendar" style="width: 14px; height: 14px;"></i>
+            <span>Appointment Booking</span>
+          </div>
+          <h3 id="bookingModalTitle">Book an Appointment</h3>
+          <p>Schedule your personalized holistic wellness or numerology session in Mysuru.</p>
+        </div>
+
+        <!-- Dynamic Alert Container for Validation / Submission Errors -->
+        <div id="bookingAlertBox" class="booking-alert booking-alert-error" role="alert">
+          <i data-lucide="alert-circle" style="width: 18px; height: 18px; flex-shrink: 0; margin-top: 2px;"></i>
+          <span id="bookingAlertMsg">Please review the required details below.</span>
+        </div>
+
+        <form id="modalAppointmentForm" novalidate>
+          <div class="booking-form-grid">
+            <!-- Full Name -->
+            <div class="booking-field-group">
+              <label for="modalBookName">Full Name <span style="color: #C0392B;">*</span></label>
+              <input type="text" id="modalBookName" class="form-input" placeholder="e.g. Rajesh Kumar" required autocomplete="name">
+            </div>
+
+            <!-- Phone Number -->
+            <div class="booking-field-group">
+              <label for="modalBookPhone">Phone Number (Indian Mobile) <span style="color: #C0392B;">*</span></label>
+              <input type="tel" id="modalBookPhone" class="form-input" placeholder="e.g. 9845012345 or +91 9845012345" required autocomplete="tel">
+              <span class="booking-field-hint">10-digit Indian mobile number</span>
+            </div>
+
+            <!-- Select Therapy -->
+            <div class="booking-field-group full-width">
+              <label for="modalBookTherapy">Select Therapy <span style="color: #C0392B;">*</span></label>
+              <select id="modalBookTherapy" class="form-select" required>
+                <option value="" disabled selected>-- Select a Holistic Therapy --</option>
+                <option value="Neurotherapy">Neurotherapy</option>
+                <option value="Marma Therapy">Marma Therapy</option>
+                <option value="Acupressure">Acupressure</option>
+                <option value="Color Therapy">Color Therapy</option>
+                <option value="Auricular Therapy">Auricular Therapy</option>
+                <option value="Numerology Consultation">Numerology Consultation</option>
+                <option value="General Wellness Consultation">General Wellness Consultation</option>
+              </select>
+            </div>
+
+            <!-- Preferred Date -->
+            <div class="booking-field-group">
+              <label for="modalBookDate">Preferred Date <span style="color: #C0392B;">*</span></label>
+              <input type="date" id="modalBookDate" class="form-input" required>
+            </div>
+
+            <!-- Preferred Time -->
+            <div class="booking-field-group">
+              <label for="modalBookTime">Preferred Time <span style="color: #C0392B;">*</span></label>
+              <select id="modalBookTime" class="form-select" required>
+                <option value="" disabled selected>-- Select Time Slot --</option>
+                <option value="Morning (9:00 AM - 12:00 PM)">Morning (9:00 AM - 12:00 PM)</option>
+                <option value="Afternoon (12:00 PM - 4:00 PM)">Afternoon (12:00 PM - 4:00 PM)</option>
+                <option value="Evening (4:00 PM - 7:30 PM)">Evening (4:00 PM - 7:30 PM)</option>
+                <option value="Flexible / Any Time">Flexible / Any Time</option>
+              </select>
+            </div>
+
+            <!-- Concern / Message -->
+            <div class="booking-field-group full-width">
+              <label for="modalBookConcern">Concern / Message (Optional)</label>
+              <textarea id="modalBookConcern" class="form-textarea" placeholder="Briefly describe your symptoms, wellness goals or specific inquiry..."></textarea>
+            </div>
+          </div>
+
+          <div style="margin-top: 20px;">
+            <button type="submit" id="modalSubmitBtn" class="btn btn-primary btn-lg booking-submit-btn">
+              <span class="btn-spinner" id="modalSubmitSpinner"></span>
+              <i data-lucide="check-circle" style="width: 18px; height: 18px;"></i>
+              <span id="modalSubmitText">Confirm & Schedule Appointment</span>
+            </button>
+          </div>
+
+          <div style="margin-top: 12px; font-size: 0.78rem; color: var(--color-text-muted); text-align: center;">
+            🔒 Your private wellness data is securely protected.
+          </div>
+        </form>
       </div>
 
-      <h3 id="confirmModalTitle" style="color: var(--color-forest); margin-bottom: 8px;">Appointment Request Ready!</h3>
-      <p style="font-size: 0.92rem; color: var(--color-text-muted); margin-bottom: 20px;">
-        Thank you! We've prepared your appointment request details. Click below to send directly on WhatsApp or copy for
-        your reference.
-      </p>
+      <!-- Success View (Shown after appointment submission) -->
+      <div id="bookingSuccessView" class="booking-success-container">
+        <div class="booking-success-icon-wrap">
+          <i data-lucide="check" style="width: 36px; height: 36px; stroke-width: 3;"></i>
+        </div>
 
-      <div id="confirmSummaryText"
-        style="text-align: left; background: var(--color-cream); padding: 16px 20px; border-radius: var(--radius-md); border: 1px solid var(--color-border); font-size: 0.88rem; line-height: 1.6; margin-bottom: 24px;">
-        <!-- Injected via JavaScript -->
-      </div>
+        <h3 class="booking-success-title">Appointment request received successfully.</h3>
+        <p class="booking-success-subtitle">
+          Thank you! We have recorded your request. Click below to directly send your appointment details to us on WhatsApp.
+        </p>
 
-      <div style="display: flex; flex-direction: column; gap: 10px;">
-        <a id="confirmWhatsAppBtn1" href="https://wa.me/919731138761" target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp btn-lg">
-          <i data-lucide="message-circle" style="width: 18px; height: 18px;"></i>
-          <span>Send via WhatsApp (+91 97311 38761)</span>
-        </a>
-        <a id="confirmWhatsAppBtn2" href="https://wa.me/919880502058" target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp btn-lg">
-          <i data-lucide="message-circle" style="width: 18px; height: 18px;"></i>
-          <span>Send via WhatsApp (+91 98805 02058)</span>
-        </a>
-        <div style="display: flex; gap: 10px;">
-          <button type="button" id="confirmCopyBtn" class="btn btn-secondary" style="flex: 1;">
-            <span>Copy Details</span>
-          </button>
-          <button type="button" class="btn btn-primary js-modal-close" style="flex: 1;">
-            <span>Done</span>
-          </button>
+        <!-- Dynamic Summary Card -->
+        <div id="modalSuccessSummaryCard" class="booking-summary-card">
+          <!-- Injected dynamically via JS -->
+        </div>
+
+        <!-- WhatsApp Action Stack -->
+        <div class="booking-actions-stack">
+          <a id="modalSuccessWhatsAppBtn" href="#" target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp btn-lg" style="width: 100%;">
+            <i data-lucide="message-circle" style="width: 20px; height: 20px;"></i>
+            <span>Send Details on WhatsApp</span>
+          </a>
+
+          <div style="display: flex; gap: 10px; margin-top: 4px;">
+            <button type="button" id="modalCopyDetailsBtn" class="btn btn-secondary" style="flex: 1;">
+              <i data-lucide="copy" style="width: 16px; height: 16px;"></i>
+              <span>Copy Details</span>
+            </button>
+            <button type="button" class="btn btn-primary js-modal-close" style="flex: 1;">
+              <span>Done</span>
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -1455,6 +1544,7 @@
 
   <!-- Scripts -->
   <script src="js/config.js"></script>
+  <script src="js/supabase-client.js"></script>
   <script src="js/main.js"></script>
   <script>
     // Initialize Lucide icons
