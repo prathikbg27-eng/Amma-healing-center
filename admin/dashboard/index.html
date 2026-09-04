@@ -1,12 +1,566 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="refresh" content="0; url=../dashboard.html">
-  <script>window.location.href = '../dashboard.html';</script>
-  <title>Redirecting to Dashboard...</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard | Amma Healing Center</title>
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#173627">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="../admin.css">
+  <link rel="stylesheet" href="/admin/admin.css">
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Supabase JS Client CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
+
 <body>
-  <p>Redirecting to <a href="../dashboard.html">Admin Dashboard</a>...</p>
+
+  <!-- Top Navigation Header -->
+  <header class="admin-navbar">
+    <div class="admin-navbar-inner">
+      <div class="admin-navbar-brand">
+        <div class="admin-navbar-logo">A</div>
+        <div class="admin-navbar-titles">
+          <h2>Amma Healing Center</h2>
+          <span>Admin Dashboard</span>
+        </div>
+      </div>
+
+      <div class="admin-navbar-actions">
+        <div class="admin-user-tag" id="adminUserTag">
+          <span style="opacity: 0.8; font-size: 0.75rem;">Signed in as</span>
+          <strong id="adminEmailDisplay">Admin</strong>
+        </div>
+        <button type="button" id="adminLogoutBtn" class="btn-admin-logout">
+          <i data-lucide="log-out" style="width: 14px; height: 14px;"></i>
+          <span>Logout</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Dashboard Container -->
+  <main class="dashboard-container">
+    <!-- Header Row -->
+    <div class="dashboard-heading-row">
+      <div>
+        <h1>Appointments Overview</h1>
+        <p>Manage, track and coordinate holistic wellness therapy appointments.</p>
+      </div>
+      <div class="dashboard-btn-group">
+        <a href="../../index.html" class="btn-action-outline" target="_blank" rel="noopener noreferrer">
+          <i data-lucide="external-link" style="width: 14px; height: 14px;"></i>
+          <span>View Website</span>
+        </a>
+        <button type="button" id="refreshAppointmentsBtn" class="btn-action-outline">
+          <i data-lucide="refresh-cw" style="width: 14px; height: 14px;"></i>
+          <span>Refresh</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Alert / Notice Area -->
+    <div id="dashboardAlertBox" class="admin-alert" role="alert">
+      <i data-lucide="info" style="width: 18px; height: 18px; flex-shrink: 0; margin-top: 2px;"></i>
+      <span id="dashboardAlertMsg"></span>
+    </div>
+
+    <!-- Statistics Cards Grid -->
+    <div class="stats-cards-grid">
+      <!-- Total Appointments -->
+      <div class="stat-card">
+        <div class="stat-icon-wrap stat-icon-total">
+          <i data-lucide="calendar" style="width: 22px; height: 22px;"></i>
+        </div>
+        <div class="stat-content">
+          <h3 id="statTotal">0</h3>
+          <p>Total Appointments</p>
+        </div>
+      </div>
+
+      <!-- Pending -->
+      <div class="stat-card">
+        <div class="stat-icon-wrap stat-icon-pending">
+          <i data-lucide="clock" style="width: 22px; height: 22px;"></i>
+        </div>
+        <div class="stat-content">
+          <h3 id="statPending">0</h3>
+          <p>Pending</p>
+        </div>
+      </div>
+
+      <!-- Confirmed -->
+      <div class="stat-card">
+        <div class="stat-icon-wrap stat-icon-confirmed">
+          <i data-lucide="check-circle" style="width: 22px; height: 22px;"></i>
+        </div>
+        <div class="stat-content">
+          <h3 id="statConfirmed">0</h3>
+          <p>Confirmed</p>
+        </div>
+      </div>
+
+      <!-- Completed -->
+      <div class="stat-card">
+        <div class="stat-icon-wrap stat-icon-completed">
+          <i data-lucide="check-check" style="width: 22px; height: 22px;"></i>
+        </div>
+        <div class="stat-content">
+          <h3 id="statCompleted">0</h3>
+          <p>Completed</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Controls Bar: Status Filter, Search & Date Filter -->
+    <div class="dashboard-controls">
+      <!-- Status Filter Pills -->
+      <div class="status-pills">
+        <button type="button" class="status-pill-btn active" data-status="all">All</button>
+        <button type="button" class="status-pill-btn" data-status="pending">Pending</button>
+        <button type="button" class="status-pill-btn" data-status="confirmed">Confirmed</button>
+        <button type="button" class="status-pill-btn" data-status="completed">Completed</button>
+        <button type="button" class="status-pill-btn" data-status="cancelled">Cancelled</button>
+      </div>
+
+      <!-- Search & Date Filter -->
+      <div class="dashboard-search-inputs">
+        <div class="search-input-wrap">
+          <i data-lucide="search" style="width: 15px; height: 15px;"></i>
+          <input type="text" id="searchInput" placeholder="Search by customer, phone, therapy...">
+        </div>
+
+        <div class="date-filter-wrap">
+          <input type="date" id="dateFilterInput" title="Filter by appointment date">
+          <button type="button" id="clearDateBtn" class="btn-clear-date" style="display: none;">Clear</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Desktop Appointments Table (Responsive Container) -->
+    <div class="appointments-table-container">
+      <div class="table-scroller">
+        <table class="appointments-table">
+          <thead>
+            <tr>
+              <th>Customer</th>
+              <th>Phone</th>
+              <th>Therapy</th>
+              <th>Date</th>
+              <th>Time</th>
+              <th>Concern</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="appointmentsTbody">
+            <tr>
+              <td colspan="8" style="text-align: center; padding: 36px; color: var(--color-text-muted);">
+                Checking authentication session...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Mobile Appointments Cards List (< 880px) -->
+      <div class="appointments-mobile-grid" id="appointmentsMobileGrid">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+  </main>
+
+  <!-- Scripts -->
+  <script src="../../js/config.js"></script>
+  <script src="/js/config.js"></script>
+  <script src="../../js/supabase-client.js"></script>
+  <script src="/js/supabase-client.js"></script>
+
+  <script>
+    let allAppointments = [];
+    let currentFilterStatus = 'all';
+    let currentSearchText = '';
+    let currentDateFilter = '';
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      if (window.lucide) window.lucide.createIcons();
+
+      // 1. Check Authentication Session
+      if (!window.AmmaSupabase) {
+        window.location.href = '../index.html';
+        return;
+      }
+
+      try {
+        const { user } = await window.AmmaSupabase.getAdminUser();
+        if (!user) {
+          // Unauthenticated user -> block direct access and redirect to login
+          window.location.href = '../index.html';
+          return;
+        }
+
+        // Display user email
+        const emailEl = document.getElementById('adminEmailDisplay');
+        if (emailEl && user.email) {
+          emailEl.textContent = user.email;
+        }
+
+        // Initialize dashboard controls and fetch data
+        initControls();
+        loadAppointments();
+      } catch (err) {
+        console.error('Auth verification error:', err);
+        window.location.href = '../index.html';
+      }
+    });
+
+    function initControls() {
+      // Logout Button
+      const logoutBtn = document.getElementById('adminLogoutBtn');
+      if (logoutBtn) {
+        logoutBtn.addEventListener('click', async () => {
+          await window.AmmaSupabase.adminSignOut();
+          window.location.href = '../index.html';
+        });
+      }
+
+      // Refresh Button
+      const refreshBtn = document.getElementById('refreshAppointmentsBtn');
+      if (refreshBtn) {
+        refreshBtn.addEventListener('click', () => {
+          loadAppointments();
+        });
+      }
+
+      // Status Filter Pills
+      document.querySelectorAll('.status-pill-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.status-pill-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          currentFilterStatus = btn.getAttribute('data-status') || 'all';
+          applyFiltersAndRender();
+        });
+      });
+
+      // Search Input
+      const searchInput = document.getElementById('searchInput');
+      if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+          currentSearchText = e.target.value;
+          applyFiltersAndRender();
+        });
+      }
+
+      // Date Filter Input
+      const dateInput = document.getElementById('dateFilterInput');
+      const clearDateBtn = document.getElementById('clearDateBtn');
+      if (dateInput) {
+        dateInput.addEventListener('change', (e) => {
+          currentDateFilter = e.target.value;
+          if (clearDateBtn) {
+            clearDateBtn.style.display = currentDateFilter ? 'inline' : 'none';
+          }
+          applyFiltersAndRender();
+        });
+      }
+
+      if (clearDateBtn) {
+        clearDateBtn.addEventListener('click', () => {
+          if (dateInput) dateInput.value = '';
+          currentDateFilter = '';
+          clearDateBtn.style.display = 'none';
+          applyFiltersAndRender();
+        });
+      }
+    }
+
+    async function loadAppointments() {
+      const tbody = document.getElementById('appointmentsTbody');
+      if (tbody) {
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: 36px; color: var(--color-text-muted);">Loading appointment records from Supabase...</td></tr>`;
+      }
+
+      try {
+        const result = await window.AmmaSupabase.fetchAppointments({ status: 'all' });
+        if (!result.success) {
+          if (tbody) {
+            tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: 36px; color: #991B1B;">${escapeHtml(result.error || 'Failed to fetch appointments.')}</td></tr>`;
+          }
+          return;
+        }
+
+        allAppointments = result.data || [];
+        calculateStats(allAppointments);
+        applyFiltersAndRender();
+      } catch (err) {
+        console.error('Error fetching appointments:', err);
+        if (tbody) {
+          tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: 36px; color: #991B1B;">An unexpected error occurred while loading appointments.</td></tr>`;
+        }
+      }
+    }
+
+    function calculateStats(items) {
+      const total = items.length;
+      const pending = items.filter(a => (a.status || '').toLowerCase() === 'pending').length;
+      const confirmed = items.filter(a => (a.status || '').toLowerCase() === 'confirmed').length;
+      const completed = items.filter(a => (a.status || '').toLowerCase() === 'completed').length;
+
+      document.getElementById('statTotal').textContent = total;
+      document.getElementById('statPending').textContent = pending;
+      document.getElementById('statConfirmed').textContent = confirmed;
+      document.getElementById('statCompleted').textContent = completed;
+    }
+
+    function applyFiltersAndRender() {
+      let filtered = [...allAppointments];
+
+      // Status Filter
+      if (currentFilterStatus && currentFilterStatus !== 'all') {
+        filtered = filtered.filter(a => (a.status || '').toLowerCase() === currentFilterStatus.toLowerCase());
+      }
+
+      // Date Filter
+      if (currentDateFilter && currentDateFilter.trim()) {
+        filtered = filtered.filter(a => a.appointment_date === currentDateFilter.trim());
+      }
+
+      // Search Filter
+      if (currentSearchText && currentSearchText.trim()) {
+        const q = currentSearchText.toLowerCase().trim();
+        filtered = filtered.filter(a =>
+          (a.full_name && a.full_name.toLowerCase().includes(q)) ||
+          (a.phone && a.phone.toLowerCase().includes(q)) ||
+          (a.therapy && a.therapy.toLowerCase().includes(q)) ||
+          (a.concern && a.concern.toLowerCase().includes(q))
+        );
+      }
+
+      renderDesktopTable(filtered);
+      renderMobileCards(filtered);
+      if (window.lucide) window.lucide.createIcons();
+    }
+
+    function renderDesktopTable(items) {
+      const tbody = document.getElementById('appointmentsTbody');
+      if (!tbody) return;
+
+      if (items.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="8">
+              <div class="table-empty-box">
+                <i data-lucide="inbox"></i>
+                <p>No appointments found matching your selected filters.</p>
+              </div>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = items.map(item => {
+        const status = (item.status || 'pending').toLowerCase();
+        return `
+          <tr>
+            <td><strong>${escapeHtml(item.full_name)}</strong></td>
+            <td>
+              <a href="tel:${escapeHtml(item.phone)}" style="color: var(--color-forest); font-weight: 500;">
+                ${escapeHtml(item.phone)}
+              </a>
+            </td>
+            <td><span style="font-weight: 600; color: var(--color-forest);">${escapeHtml(item.therapy)}</span></td>
+            <td style="white-space: nowrap;">${escapeHtml(item.appointment_date)}</td>
+            <td style="white-space: nowrap; font-size: 0.84rem;">${escapeHtml(item.preferred_time)}</td>
+            <td>
+              <span style="display: inline-block; max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${escapeHtml(item.concern || '')}">
+                ${escapeHtml(item.concern || '—')}
+              </span>
+            </td>
+            <td>
+              <span class="badge-status ${status}">
+                ${status}
+              </span>
+            </td>
+            <td>
+              <div class="table-btn-stack">
+                <button type="button" class="btn-tbl-action btn-tbl-wa" onclick="whatsappCustomer('${item.id}')" title="WhatsApp Customer">
+                  <i data-lucide="message-circle" style="width: 13px; height: 13px;"></i>
+                  <span>WhatsApp</span>
+                </button>
+                ${status !== 'confirmed' ? `
+                <button type="button" class="btn-tbl-action btn-tbl-confirm" onclick="updateStatus('${item.id}', 'confirmed')" title="Confirm Appointment">
+                  <i data-lucide="check" style="width: 13px; height: 13px;"></i>
+                  <span>Confirm</span>
+                </button>` : ''}
+                ${status !== 'completed' ? `
+                <button type="button" class="btn-tbl-action btn-tbl-complete" onclick="updateStatus('${item.id}', 'completed')" title="Mark as Completed">
+                  <i data-lucide="check-check" style="width: 13px; height: 13px;"></i>
+                  <span>Complete</span>
+                </button>` : ''}
+                ${status !== 'cancelled' ? `
+                <button type="button" class="btn-tbl-action btn-tbl-cancel" onclick="updateStatus('${item.id}', 'cancelled')" title="Cancel Appointment">
+                  <i data-lucide="x" style="width: 13px; height: 13px;"></i>
+                  <span>Cancel</span>
+                </button>` : ''}
+                <button type="button" class="btn-tbl-action btn-tbl-delete" onclick="deleteAppointment('${item.id}')" title="Delete Record">
+                  <i data-lucide="trash-2" style="width: 13px; height: 13px;"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function renderMobileCards(items) {
+      const container = document.getElementById('appointmentsMobileGrid');
+      if (!container) return;
+
+      if (items.length === 0) {
+        container.innerHTML = `
+          <div class="table-empty-box">
+            <i data-lucide="inbox"></i>
+            <p>No appointments found matching your selected filters.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = items.map(item => {
+        const status = (item.status || 'pending').toLowerCase();
+        return `
+          <div class="mobile-appointment-card">
+            <div class="mobile-card-top">
+              <div>
+                <div class="mobile-card-customer">${escapeHtml(item.full_name)}</div>
+                <div class="mobile-card-phone">${escapeHtml(item.phone)}</div>
+              </div>
+              <span class="badge-status ${status}">${status}</span>
+            </div>
+
+            <div class="mobile-card-rows">
+              <div class="mobile-card-row">
+                <span class="label">Therapy:</span>
+                <span class="value">${escapeHtml(item.therapy)}</span>
+              </div>
+              <div class="mobile-card-row">
+                <span class="label">Date:</span>
+                <span class="value">${escapeHtml(item.appointment_date)}</span>
+              </div>
+              <div class="mobile-card-row">
+                <span class="label">Time:</span>
+                <span class="value">${escapeHtml(item.preferred_time)}</span>
+              </div>
+              ${item.concern ? `
+              <div class="mobile-card-row">
+                <span class="label">Concern:</span>
+                <span class="value" style="max-width: 60%;">${escapeHtml(item.concern)}</span>
+              </div>` : ''}
+            </div>
+
+            <div class="mobile-card-btns">
+              <button type="button" class="btn-tbl-action btn-tbl-wa" onclick="whatsappCustomer('${item.id}')">
+                <i data-lucide="message-circle" style="width: 14px; height: 14px;"></i>
+                <span>WhatsApp Customer</span>
+              </button>
+              ${status !== 'confirmed' ? `
+              <button type="button" class="btn-tbl-action btn-tbl-confirm" onclick="updateStatus('${item.id}', 'confirmed')">
+                <i data-lucide="check" style="width: 14px; height: 14px;"></i>
+                <span>Confirm</span>
+              </button>` : ''}
+              ${status !== 'completed' ? `
+              <button type="button" class="btn-tbl-action btn-tbl-complete" onclick="updateStatus('${item.id}', 'completed')">
+                <i data-lucide="check-check" style="width: 14px; height: 14px;"></i>
+                <span>Complete</span>
+              </button>` : ''}
+              ${status !== 'cancelled' ? `
+              <button type="button" class="btn-tbl-action btn-tbl-cancel" onclick="updateStatus('${item.id}', 'cancelled')">
+                <i data-lucide="x" style="width: 14px; height: 14px;"></i>
+                <span>Cancel</span>
+              </button>` : ''}
+              <button type="button" class="btn-tbl-action btn-tbl-delete" onclick="deleteAppointment('${item.id}')">
+                <i data-lucide="trash-2" style="width: 14px; height: 14px;"></i>
+                <span>Delete</span>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    async function updateStatus(id, newStatus) {
+      try {
+        const result = await window.AmmaSupabase.updateAppointmentStatus(id, newStatus);
+        if (!result.success) {
+          alert('Failed to update status: ' + result.error);
+          return;
+        }
+
+        const item = allAppointments.find(a => a.id === id);
+        if (item) {
+          item.status = newStatus;
+        }
+        calculateStats(allAppointments);
+        applyFiltersAndRender();
+      } catch (err) {
+        console.error('Update status error:', err);
+      }
+    }
+
+    async function deleteAppointment(id) {
+      if (!confirm('Are you sure you want to permanently delete this appointment record?')) {
+        return;
+      }
+
+      try {
+        const result = await window.AmmaSupabase.deleteAppointmentRecord(id);
+        if (!result.success) {
+          alert('Failed to delete: ' + result.error);
+          return;
+        }
+
+        allAppointments = allAppointments.filter(a => a.id !== id);
+        calculateStats(allAppointments);
+        applyFiltersAndRender();
+      } catch (err) {
+        console.error('Delete error:', err);
+      }
+    }
+
+    function whatsappCustomer(id) {
+      const item = allAppointments.find(a => a.id === id);
+      if (!item) return;
+
+      let cleanPhone = item.phone.replace(/[^0-9]/g, '');
+      if (cleanPhone.length === 10) {
+        cleanPhone = '91' + cleanPhone;
+      }
+
+      const message = `Hello ${item.full_name},\n\nThis is Amma Healing Center, Mysuru regarding your ${item.therapy} appointment.\n\nDate: ${item.appointment_date}\nTime: ${item.preferred_time}\nStatus: ${(item.status || 'pending').toUpperCase()}\n\nPlease let us know if you have any questions or require directions to our center in Agrahara, Mysuru.\n\nThank you,\nAmma Healing Center`;
+
+      const waUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`;
+      window.open(waUrl, '_blank');
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      const div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    }
+  </script>
 </body>
+
 </html>
