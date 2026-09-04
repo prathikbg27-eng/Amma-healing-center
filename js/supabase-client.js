@@ -4,10 +4,21 @@
  */
 
 (function (window) {
-  // Read configuration from SITE_CONFIG or environment variables
-  const config = window.SITE_CONFIG || {};
-  const supabaseUrl = (config.supabaseUrl || '').trim();
-  const supabaseAnonKey = (config.supabaseAnonKey || '').trim();
+  // Read configuration from SITE_CONFIG, window.SITE_CONFIG, or environment variables
+  const config = window.SITE_CONFIG || (typeof SITE_CONFIG !== 'undefined' ? SITE_CONFIG : {});
+  const supabaseUrl = (
+    config.supabaseUrl ||
+    (typeof window !== 'undefined' && window.SUPABASE_URL) ||
+    (typeof SUPABASE_URL !== 'undefined' ? SUPABASE_URL : '') ||
+    ''
+  ).trim();
+
+  const supabaseAnonKey = (
+    config.supabaseAnonKey ||
+    (typeof window !== 'undefined' && window.SUPABASE_ANON_KEY) ||
+    (typeof SUPABASE_ANON_KEY !== 'undefined' ? SUPABASE_ANON_KEY : '') ||
+    ''
+  ).trim();
 
   let supabaseClient = null;
 

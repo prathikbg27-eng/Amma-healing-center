@@ -3,12 +3,13 @@
  * Update business details, contact information, hours, and review stats here.
  */
 
+// Define global config object and attach to window
 const SITE_CONFIG = {
   businessName: "Amma Healing Centerr",
   category: "Holistic Healing & Wellness Center",
   tagline: "Natural Healing. Better Wellbeing.",
 
-  // Supabase Configuration (Replace with your Supabase Project values in production)
+  // Supabase Configuration
   supabaseUrl: (typeof window !== 'undefined' && window.__ENV_SUPABASE_URL) || "https://ewsmhwrculcridwqknid.supabase.co",
   supabaseAnonKey: (typeof window !== 'undefined' && window.__ENV_SUPABASE_ANON_KEY) || "sb_publishable_ZiSUek73xeZYNGGGq9unwg_-Zvvjhns",
 
@@ -231,3 +232,7 @@ const SITE_CONFIG = {
     }
   ]
 };
+
+if (typeof window !== 'undefined') {
+  window.SITE_CONFIG = SITE_CONFIG;
+}
