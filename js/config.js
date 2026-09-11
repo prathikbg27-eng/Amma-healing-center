@@ -1,17 +1,21 @@
 /**
- * Amma Healing Centerr - Configuration File
+ * Amma Healing Centre - Configuration File
  * Update business details, contact information, hours, and review stats here.
  */
 
+// Resolve environment variables or defaults
+const envSupabaseUrl = (typeof window !== 'undefined' && window.__ENV_SUPABASE_URL) ? window.__ENV_SUPABASE_URL : "https://ewsmhwrculcridwqknid.supabase.co";
+const envSupabaseAnonKey = (typeof window !== 'undefined' && window.__ENV_SUPABASE_ANON_KEY) ? window.__ENV_SUPABASE_ANON_KEY : "sb_publishable_ZiSUek73xeZYNGGGq9unwg_-Zvvjhns";
+
 // Define global config object and attach to window
 const SITE_CONFIG = {
-  businessName: "Amma Healing Centerr",
-  category: "Holistic Healing & Wellness Center",
+  businessName: "Amma Healing Centre",
+  category: "Holistic Healing & Wellness Centre",
   tagline: "Natural Healing. Better Wellbeing.",
 
   // Supabase Configuration
-  supabaseUrl: (typeof window !== 'undefined' && window.__ENV_SUPABASE_URL) || "https://ewsmhwrculcridwqknid.supabase.co",
-  supabaseAnonKey: (typeof window !== 'undefined' && window.__ENV_SUPABASE_ANON_KEY) || "sb_publishable_ZiSUek73xeZYNGGGq9unwg_-Zvvjhns",
+  supabaseUrl: envSupabaseUrl,
+  supabaseAnonKey: envSupabaseAnonKey,
 
   // Contact & Location Details
   phoneDisplay: "+91 97311 38761 / +91 98805 02058",
@@ -70,13 +74,13 @@ const SITE_CONFIG = {
         quote: "The staff were supportive and made me feel comfortable throughout the process.",
         author: "Verified Visitor",
         rating: 5,
-        service: "Holistic Wellness Session"
+        service: "Therapy Session"
       },
       {
         quote: "He listens carefully to every concern and provides the right treatment approach.",
         author: "Verified Visitor",
         rating: 5,
-        service: "Personalized Therapy"
+        service: "Consultation"
       },
       {
         quote: "I would definitely recommend this place to anyone looking for natural healing.",
@@ -92,113 +96,113 @@ const SITE_CONFIG = {
     {
       id: "neurotherapy",
       name: "Neurotherapy",
-      tagline: "Natural Stimulation for Nerve & Organ Vitality",
-      shortDesc: "A non-invasive, drug-free therapy that applies systematic gentle pressure to specific nerve points to stimulate natural blood flow, nerve coordination, and organ balance.",
-      longDesc: "Neurotherapy is an ancient and holistic pressure technique that focuses on revitalizing the body's internal systems. By applying rhythmic, calibrated pressure on designated nerve clusters and vascular points, it helps restore proper circulation, encourages self-regulation, and assists the body in finding its natural state of equilibrium.",
-      benefits: ["Supports natural blood circulation", "Non-invasive and completely drugless", "Helps relieve accumulated physical stress", "Tailored to individual bodily response"],
+      tagline: "Nerve & Circulation Vitality",
+      shortDesc: "Calibrated pressure on specific nerve points and vascular channels to improve circulation, relieve deep tension, and stimulate organ function.",
+      longDesc: "Neurotherapy applies rhythmic, measured pressure on designated nerve clusters and blood vessels. This drug-free technique encourages healthy blood flow, relaxes overstressed muscles, and supports your internal systems naturally.",
+      benefits: ["Supports healthy blood circulation", "100% drug-free and non-invasive", "Relieves deep physical tension", "Adapted to your comfort level"],
       image: "assets/images/therapy-neurotherapy.jpg",
       icon: "activity"
     },
     {
       id: "marma-therapy",
       name: "Marma Therapy",
-      tagline: "Awakening Vital Energy Points",
-      shortDesc: "A classical Indian healing science that gently stimulates 107 vital energy points (Marmas) across the body to release blocked prana, ease tension, and nurture deep relaxation.",
-      longDesc: "Marma Therapy stems from traditional wellness traditions and works with the body's subtle energy matrix. Through mindful touch and gentle pressure on specific anatomical meeting points of muscles, veins, and joints, Marma therapy fosters energetic harmony, eases localized physical stiffness, and deeply soothes the mind.",
-      benefits: ["Encourages smooth energetic flow (Prana)", "Relieves deep seated tension & stiffness", "Promotes nervous system calming", "Holistic mind-body rejuvenation"],
+      tagline: "Vital Energy Point Stimulation",
+      shortDesc: "Gentle activation of 107 vital energy points across the body to release chronic stiffness, soothe tension, and calm the mind.",
+      longDesc: "Rooted in classical Indian healing traditions, Marma therapy works with key anatomical points where muscles, veins, and joints converge. Mindful touch at these centers clears stiffness, improves mobility, and brings deep physical ease.",
+      benefits: ["Releases chronic muscular stiffness", "Clears blocked energy pathways", "Calms the nervous system", "Enhances natural flexibility"],
       image: "assets/images/therapy-marma.jpg",
       icon: "sparkles"
     },
     {
       id: "acupressure",
       name: "Acupressure",
-      tagline: "Targeted Pressure-Point Harmony",
-      shortDesc: "A time-tested holistic method applying precise fingertip pressure to energy meridian points to relieve muscular tightness, improve circulation, and stimulate natural healing.",
-      longDesc: "Acupressure is a foundational complementary therapy that works by activating key acupoints along the body's meridian pathways. By utilizing targeted manual pressure rather than needles, it gently assists in easing discomfort, supporting postural balance, and restoring internal vitality.",
-      benefits: ["Eases back, neck, and joint fatigue", "Stimulates natural recovery pathways", "Enhances circulation and relaxation", "Gentle, comfortable manual method"],
+      tagline: "Targeted Pressure-Point Relief",
+      shortDesc: "Precise fingertip pressure along meridian pathways to relieve muscular tightness, improve circulation, and correct postural fatigue.",
+      longDesc: "Acupressure applies firm, steady manual pressure to key meridian points across the body. By releasing tight muscular knots and promoting localized blood flow, it eases back, neck, and joint discomfort without needles.",
+      benefits: ["Relieves back, neck, and joint fatigue", "Reduces muscle spasms and tightness", "Improves local blood circulation", "Comfortable, needle-free method"],
       image: "assets/images/therapy-acupressure.jpg",
       icon: "hand-metal"
     },
     {
       id: "color-therapy",
       name: "Color Therapy (Chromotherapy)",
-      tagline: "Balancing Energy Through Light & Color",
-      shortDesc: "A gentle complementary therapy utilizing the calming vibrations of specific color wavelengths and light frequencies to support mood, vitality, and energetic balance.",
-      longDesc: "Color Therapy works on the principle that visible light spectrums possess distinct vibrational energies that interact with our subtle senses. By mindfully introducing harmonious hues and ambient light, sessions help soothe mental fatigue, calm emotional stress, and bring balance to your daily lifestyle.",
-      benefits: ["Soothes nervous strain and restlessness", "Supports emotional calmness and clarity", "Complementary gentle vibrational approach", "Non-touch, relaxing ambient experience"],
+      tagline: "Light Frequencies for Mental Calm",
+      shortDesc: "Specific visible light frequencies and colors to settle mental fatigue, support emotional tranquility, and recharge vitality.",
+      longDesc: "Color therapy applies specific light wavelengths to help quiet an overactive mind, ease emotional tension, and encourage restful sleep. It provides a peaceful, non-touch experience that complements physical treatments.",
+      benefits: ["Soothes stress and mental strain", "Promotes emotional tranquility", "Gentle non-touch experience", "Complements physical therapies"],
       image: "assets/images/therapy-color.jpg",
       icon: "sun"
     },
     {
       id: "auricular-therapy",
       name: "Auricular Therapy",
-      tagline: "Reflexology Through the External Ear",
-      shortDesc: "A specialized reflex technique where gentle pressure or natural herbal seeds are applied to corresponding points on the outer ear to promote full-body relaxation and balance.",
-      longDesc: "Auricular Therapy utilizes the microsystem of the ear, which reflects the neural pathways and organs of the entire body. By placing gentle magnetic pellets or herbal seeds on precise points, the therapy provides gentle, continuous stimulation that aids in stress management, sleep support, and comfort.",
-      benefits: ["Assists in stress and tension relief", "Supports digestive and postural comfort", "Continuous gentle reflex stimulation", "Simple, hygienic, and non-invasive"],
+      tagline: "Outer Ear Reflexology",
+      shortDesc: "Gentle stimulation of outer ear reflex points using herbal seeds or magnetic pellets to relieve tension and support deep rest.",
+      longDesc: "Auricular therapy utilizes the reflex map on the outer ear, which connects to neural pathways across the body. Small magnetic pellets or herbal seeds provide continuous, gentle stimulation to ease discomfort and improve sleep quality.",
+      benefits: ["Eases daily stress and tension", "Supports restful sleep patterns", "Continuous gentle reflex action", "Hygienic, comfortable, and simple"],
       image: "assets/images/therapy-auricular.jpg",
       icon: "ear"
     },
     {
       id: "numerology-guidance",
       name: "Numerology Services",
-      tagline: "Insights Through Numbers & Life Energy",
-      shortDesc: "Personalized numerological analysis providing insights into your date of birth, name vibration, mobile number, and vehicle numbers for personal alignment.",
-      longDesc: "Numerology is a time-honored analytical science of numerical vibrations. By calculating life path numbers, grid patterns (Lo Shu Grid), and phonetic vibrations, our consultations offer perspective for personal clarity, name harmonization, and key lifestyle decisions.",
-      benefits: ["Mobile & vehicle number compatibility", "Name spelling & phonetic alignment", "Date of birth Grid analysis", "Personalized lifestyle clarity"],
+      tagline: "Clarity Through Numerical Analysis",
+      shortDesc: "Personalized analysis of your birth date, name vibration, mobile, and vehicle numbers for life clarity and practical alignment.",
+      longDesc: "Numerology evaluates numerical patterns in your date of birth, name spelling, and daily numbers. Sessions provide practical perspective and clarity for personal decisions, career milestones, and life transitions.",
+      benefits: ["Mobile & vehicle number compatibility", "Name spelling & phonetic alignment", "Lo Shu birth grid analysis", "Practical lifestyle clarity"],
       image: "assets/images/numerology-hero.jpg",
       icon: "hash"
     }
   ],
 
-  // Common Concerns We Provide Wellness Support For
+  // Common Concerns We Provide Support For
   concerns: [
     {
       name: "Back Pain",
-      category: "Musculoskeletal Support",
-      description: "Gentle spinal alignment, nerve stimulation, and acupressure designed to ease lumbar stiffness and improve flexibility.",
+      category: "Spine & Posture",
+      description: "Targeted spinal pressure, neurotherapy, and acupressure to release lumbar stiffness and improve flexibility.",
       recommendedTherapies: ["Neurotherapy", "Acupressure", "Marma Therapy"]
     },
     {
       name: "Knee Pain",
-      category: "Joint & Mobility Wellness",
-      description: "Holistic pressure techniques to support joint comfort, improve circulation around knee tendons, and encourage mobility.",
+      category: "Joint Mobility",
+      description: "Gentle Marma point and acupressure stimulation to enhance circulation and ease stiffness around knee tendons.",
       recommendedTherapies: ["Marma Therapy", "Acupressure", "Neurotherapy"]
     },
     {
       name: "Sciatica",
-      category: "Nerve & Posture Care",
-      description: "Complementary pressure point and neurotherapy sessions aimed at relieving gluteal pressure and supporting nerve flow down the leg.",
+      category: "Nerve Comfort",
+      description: "Focused nerve and pressure point sessions to alleviate tension radiating through the lower back and leg.",
       recommendedTherapies: ["Neurotherapy", "Acupressure"]
     },
     {
       name: "Frozen Shoulder",
-      category: "Shoulder & Upper Body Mobility",
-      description: "Specialized gentle pressure on shoulder Marma points and upper spine to encourage range of motion and ease discomfort.",
+      category: "Shoulder Mobility",
+      description: "Gentle activation of shoulder Marma points to restore range of motion and relieve chronic stiffness.",
       recommendedTherapies: ["Marma Therapy", "Acupressure", "Neurotherapy"]
     },
     {
-      name: "Sinus Concerns",
-      category: "Respiratory & Facial Comfort",
-      description: "Targeted facial acupressure and auricular points to promote sinus drainage, relieve congestion, and ease cranial tension.",
+      name: "Sinus Discomfort",
+      category: "Facial & Cranial Ease",
+      description: "Facial acupressure and ear reflex points to clear nasal congestion and ease cranial pressure.",
       recommendedTherapies: ["Acupressure", "Auricular Therapy", "Color Therapy"]
     },
     {
-      name: "Blood Pressure",
-      category: "Lifestyle & Stress Management",
-      description: "Relaxing nerve therapy, color therapy, and acupressure to help calm the autonomic nervous system and promote peaceful relaxation.",
+      name: "Blood Pressure Stress",
+      category: "Stress & Circulation",
+      description: "Calming neurotherapy and color sessions to settle autonomic stress responses and promote deep relaxation.",
       recommendedTherapies: ["Neurotherapy", "Color Therapy", "Auricular Therapy"]
     },
     {
-      name: "Cholesterol Support",
-      category: "Metabolic & Vitality Support",
-      description: "Holistic stimulation of digestive and metabolic reflex points along with lifestyle guidance to complement your overall wellness routine.",
+      name: "Metabolic Vitality",
+      category: "Digestion & Energy",
+      description: "Reflex point stimulation paired with practical routine guidance to support natural digestion and vitality.",
       recommendedTherapies: ["Neurotherapy", "Acupressure"]
     },
     {
-      name: "Kidney-Related Concerns",
-      category: "Fluid & Energetic Balance",
-      description: "Complementary acupressure and neurotherapy targeting lumbar reflex zones to encourage natural energetic balance and relaxation.",
+      name: "Kidney Vitality",
+      category: "Fluid & Energetic Ease",
+      description: "Acupressure and neurotherapy targeting lumbar reflex pathways to encourage natural fluid balance.",
       recommendedTherapies: ["Neurotherapy", "Acupressure", "Marma Therapy"]
     }
   ],
@@ -208,27 +212,27 @@ const SITE_CONFIG = {
     {
       title: "Mobile Number Numerology",
       icon: "smartphone",
-      desc: "Analyze the energetic compatibility and frequency of your daily phone number to align with your personal energy and professional growth."
+      desc: "Analyzes how your daily phone number's vibration aligns with your personal energy and career pursuits."
     },
     {
       title: "Name Correction",
       icon: "spell-check",
-      desc: "Phonetic and numerical balancing of your name to harmonize with your date of birth, fostering positive personal and professional resonance."
+      desc: "Harmonizes the spelling and phonetic vibration of your name with your date of birth for positive resonance."
     },
     {
-      title: "Grid Numerology (Lo Shu)",
+      title: "Lo Shu Grid Numerology",
       icon: "grid",
-      desc: "Comprehensive 3x3 birth chart grid analysis to identify element strengths, missing numbers, and behavioral tendencies."
+      desc: "3x3 birth chart analysis to uncover elemental strengths, missing numbers, and natural behavioral tendencies."
     },
     {
       title: "Vehicle Number Guidance",
       icon: "car",
-      desc: "Determine auspicious total vibration numbers for your automobile, two-wheeler, or commercial vehicles."
+      desc: "Identifies auspicious total vibration numbers for your two-wheeler, car, or commercial vehicle."
     },
     {
-      title: "Date-of-Birth Based Guidance",
+      title: "Date-of-Birth Analysis",
       icon: "calendar",
-      desc: "Deep analysis of your radical (driver) and destiny (conductor) numbers to understand natural strengths and auspicious cycles."
+      desc: "In-depth review of your Driver and Conductor numbers to provide clarity on timing, career, and personal goals."
     }
   ]
 };

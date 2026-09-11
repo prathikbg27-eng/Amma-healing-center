@@ -4,7 +4,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Dashboard | Amma Healing Center</title>
+  <title>Admin Dashboard | Amma Healing Centre</title>
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
   <meta name="robots" content="noindex, nofollow">
   <meta name="theme-color" content="#173627">
 
@@ -15,8 +16,6 @@
 
   <!-- Stylesheets -->
   <link rel="stylesheet" href="admin.css">
-  <link rel="stylesheet" href="../admin.css">
-  <link rel="stylesheet" href="/admin/admin.css">
 
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
@@ -33,7 +32,7 @@
       <div class="admin-navbar-brand">
         <div class="admin-navbar-logo">A</div>
         <div class="admin-navbar-titles">
-          <h2>Amma Healing Center</h2>
+          <h2>Amma Healing Centre</h2>
           <span>Admin Dashboard</span>
         </div>
       </div>
@@ -184,9 +183,7 @@
 
   <!-- Scripts -->
   <script src="../js/config.js"></script>
-  <script src="/js/config.js"></script>
   <script src="../js/supabase-client.js"></script>
-  <script src="/js/supabase-client.js"></script>
 
   <script>
     let allAppointments = [];
@@ -549,7 +546,7 @@
         cleanPhone = '91' + cleanPhone;
       }
 
-      const message = `Hello ${item.full_name},\n\nThis is Amma Healing Center, Mysuru regarding your ${item.therapy} appointment.\n\nDate: ${item.appointment_date}\nTime: ${item.preferred_time}\nStatus: ${(item.status || 'pending').toUpperCase()}\n\nPlease let us know if you have any questions or require directions to our center in Agrahara, Mysuru.\n\nThank you,\nAmma Healing Center`;
+      const message = `Hello ${item.full_name},\n\nThis is Amma Healing Centre, Mysuru regarding your ${item.therapy} appointment.\n\nDate: ${item.appointment_date}\nTime: ${item.preferred_time}\nStatus: ${(item.status || 'pending').toUpperCase()}\n\nPlease let us know if you have any questions or require directions to our centre in Agrahara, Mysuru.\n\nThank you,\nAmma Healing Centre`;
 
       const waUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`;
       window.open(waUrl, '_blank');

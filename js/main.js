@@ -1,5 +1,5 @@
 /**
- * Amma Healing Centerr - Main Application Script
+ * Amma Healing Centre - Main Application Script
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -35,7 +35,7 @@ function injectConfigData() {
   });
 
   // WhatsApp elements
-  const defaultWaText = encodeURIComponent(`Hello Amma Healing Centerr, I would like to inquire about holistic wellness therapies / numerology guidance in Mysuru.`);
+  const defaultWaText = encodeURIComponent(`Hello Amma Healing Centre, I would like to inquire about therapies / numerology guidance in Mysuru.`);
   document.querySelectorAll('.js-whatsapp-link, .js-whatsapp-link-1').forEach(el => {
     el.setAttribute('href', `https://wa.me/${SITE_CONFIG.whatsappNumber}?text=${defaultWaText}`);
   });
@@ -338,7 +338,7 @@ function initUnifiedBookingModal() {
     if (successView) successView.classList.add('active');
 
     // Build standard WhatsApp Message as strictly required:
-    const waMessage = `Hello Amma Healing Center,\n\nI would like to book an appointment.\n\nName: ${data.full_name}\nPhone: ${data.phone}\nTherapy: ${data.therapy}\nPreferred Date: ${data.appointment_date}\nPreferred Time: ${data.preferred_time}\n\nConcern:\n${data.concern || 'None specified'}\n\nThank you.`;
+    const waMessage = `Hello Amma Healing Centre,\n\nI would like to book an appointment.\n\nName: ${data.full_name}\nPhone: ${data.phone}\nTherapy: ${data.therapy}\nPreferred Date: ${data.appointment_date}\nPreferred Time: ${data.preferred_time}\n\nConcern:\n${data.concern || 'None specified'}\n\nThank you.`;
 
     const encodedMsg = encodeURIComponent(waMessage);
     const waNumber = (typeof SITE_CONFIG !== 'undefined' && SITE_CONFIG.whatsappNumber) ? SITE_CONFIG.whatsappNumber : '919731138761';
@@ -421,7 +421,7 @@ function initTherapyModals() {
     modalTitle.textContent = therapy.name;
     modalTagline.textContent = therapy.tagline;
     modalImage.src = therapy.image;
-    modalImage.alt = `${therapy.name} at Amma Healing Centerr`;
+    modalImage.alt = `${therapy.name} at Amma Healing Centre`;
     modalDescription.textContent = therapy.longDesc;
 
     // Populate benefits
@@ -447,7 +447,7 @@ function initTherapyModals() {
  */
 function initConcernInteractions() {
   window.selectConcernAndBook = function(concernName) {
-    window.openBookingModal('', `I would like holistic wellness guidance regarding: ${concernName}.`);
+    window.openBookingModal('', `I would like guidance regarding: ${concernName}.`);
   };
 }
 
@@ -471,7 +471,7 @@ function initNumerologyCalculator() {
     const dob = document.getElementById('numDob').value;
     const serviceType = document.getElementById('numServiceType').value;
 
-    let inquiryText = `Hello Amma Healing Center,\n\nI would like to inquire about Numerology Guidance.\n`;
+    let inquiryText = `Hello Amma Healing Centre,\n\nI would like to inquire about Numerology Guidance.\n`;
     if (name) inquiryText += `Name: ${name}\n`;
     if (dob) inquiryText += `Date of Birth: ${dob}\n`;
     inquiryText += `Area of Guidance: ${serviceType}\n\nThank you.`;

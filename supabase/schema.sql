@@ -1,5 +1,5 @@
 -- ==============================================================================
--- AMMA HEALING CENTER - DATABASE SCHEMA & ROW LEVEL SECURITY POLICIES
+-- AMMA HEALING CENTRE - DATABASE SCHEMA & ROW LEVEL SECURITY POLICIES
 -- Target Database: Supabase PostgreSQL
 -- ==============================================================================
 

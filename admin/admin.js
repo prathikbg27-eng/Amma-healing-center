@@ -1,5 +1,5 @@
 /**
- * Amma Healing Center - Admin Portal Script
+ * Amma Healing Centre - Admin Portal Script
  * Authentication, Dashboard Metrics, Search/Filters, Actions & WhatsApp
  */
 
@@ -484,7 +484,7 @@ function whatsappCustomer(id) {
     cleanPhone = '91' + cleanPhone;
   }
 
-  const message = `Hello ${item.full_name},\n\nThis is Amma Healing Center, Mysuru regarding your ${item.therapy} appointment.\n\nDate: ${item.appointment_date}\nTime: ${item.preferred_time}\nStatus: ${item.status.toUpperCase()}\n\nPlease let us know if you have any questions or require directions to our center in Agrahara, Mysuru.\n\nThank you,\nAmma Healing Center`;
+  const message = `Hello ${item.full_name},\n\nThis is Amma Healing Centre, Mysuru regarding your ${item.therapy} appointment.\n\nDate: ${item.appointment_date}\nTime: ${item.preferred_time}\nStatus: ${item.status.toUpperCase()}\n\nPlease let us know if you have any questions or require directions to our centre in Agrahara, Mysuru.\n\nThank you,\nAmma Healing Centre`;
 
   const waUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`;
   window.open(waUrl, '_blank');

@@ -1,4 +1,4 @@
-# Amma Healing Center — Complete Deployment & Setup Guide
+# Amma Healing Centre — Complete Deployment & Setup Guide
 
 This guide covers everything required to connect your Supabase database, configure authentication, test the appointment booking system, and deploy the production website to **Vercel** (while maintaining static preview compatibility on **GitHub Pages**).
 

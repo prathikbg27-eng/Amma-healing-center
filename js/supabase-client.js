@@ -1,5 +1,5 @@
 /**
- * Amma Healing Center - Supabase Integration Client
+ * Amma Healing Centre - Supabase Integration Client
  * Handles Appointment Submissions, Supabase Authentication & Admin Operations
  */
 
@@ -54,7 +54,7 @@
           });
         }
       } catch (err) {
-        console.error('[Amma Healing Center] Supabase client initialization error:', err);
+        console.error('[Amma Healing Centre] Supabase client initialization error:', err);
       }
     }
     return supabaseClient;
