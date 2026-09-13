@@ -25,7 +25,7 @@ const SITE_CONFIG = {
   phoneCallSecondary: "+919880502058", // Secondary tel link format
   whatsappNumber: "919731138761",   // Primary WhatsApp business number
   whatsappNumber2: "919880502058",  // Secondary WhatsApp business number
-  email: "ammahealingcenter@2026",
+  email: "ammahealingcentre@2026",
 
   // Standard Booking Therapies and Slots
   bookingTherapies: [

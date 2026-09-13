@@ -8,7 +8,7 @@ This guide covers everything required to connect your Supabase database, configu
 
 1. Go to [https://supabase.com](https://supabase.com) and log in or sign up.
 2. Click **New Project**.
-3. Choose an Organization, provide a Project Name (e.g. `amma-healing-center`), choose a strong database password, and select the region closest to your visitors (e.g. `ap-south-1` Mumbai / India).
+3. Choose an Organization, provide a Project Name (e.g. `amma-healing-centre`), choose a strong database password, and select the region closest to your visitors (e.g. `ap-south-1` Mumbai / India).
 4. Click **Create new project** and wait for the database provisioning to complete (1–2 minutes).
 
 ---
@@ -80,7 +80,7 @@ USING (true);
 
 1. In the Supabase dashboard, navigate to **Authentication** -> **Users**.
 2. Click **Add User** -> **Create user**.
-3. Enter your desired Admin Email (e.g. `admin@ammahealingcenter.com`) and a secure password.
+3. Enter your desired Admin Email (e.g. `admin@ammahealingcentre.com`) and a secure password.
 4. Toggle **Auto Confirm User?** to **ON** (so email verification is not required for your initial admin login).
 5. Click **Create user**.
 
