@@ -1,0 +1,27 @@
+{
+  "name": "amma-healing-centre",
+  "version": "1.0.0",
+  "description": "Amma Healing Centre website - Natural healing therapies in Mysuru",
+  "main": "index.js",
+  "scripts": {
+    "build:speed-insights": "esbuild js/speed-insights-init.js --bundle --format=iife --outfile=js/speed-insights.bundle.js --minify",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/prathikbg27-eng/Amma-healing-center.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/prathikbg27-eng/Amma-healing-center/issues"
+  },
+  "homepage": "https://github.com/prathikbg27-eng/Amma-healing-center#readme",
+  "dependencies": {
+    "@vercel/speed-insights": "^2.0.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.2"
+  }
+}
