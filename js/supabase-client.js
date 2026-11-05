@@ -145,10 +145,9 @@
     }
 
     try {
-      const { data: insertedData, error } = await client
+      const { error } = await client
         .from('appointments')
-        .insert([payload])
-        .select();
+        .insert(payload);
 
       if (error) {
         console.error('[Supabase Insert Error]', error);
@@ -160,7 +159,7 @@
 
       return {
         success: true,
-        data: insertedData && insertedData[0] ? insertedData[0] : payload
+        data: payload
       };
     } catch (err) {
       console.error('[Supabase Submission Exception]', err);
