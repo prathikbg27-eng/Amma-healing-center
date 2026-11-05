@@ -1830,6 +1830,56 @@ p:last-child {
   gap: 16px;
 }
 
+.footer-copyright-wrap {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.footer-separator {
+  color: rgba(255, 255, 255, 0.2);
+  user-select: none;
+}
+
+.footer-admin-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: #8CA395;
+  text-decoration: none;
+  font-size: 0.82rem;
+  font-weight: 500;
+  padding: 3px 8px;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+  opacity: 0.85;
+}
+
+.footer-admin-link:hover {
+  color: var(--color-gold-light);
+  background: rgba(255, 255, 255, 0.06);
+  opacity: 1;
+}
+
+.footer-admin-link:focus-visible {
+  outline: 2px solid var(--color-gold-light);
+  outline-offset: 2px;
+}
+
+.footer-admin-link svg,
+.footer-admin-link [data-lucide] {
+  width: 13px;
+  height: 13px;
+  stroke-width: 2;
+  transition: transform var(--transition-fast);
+}
+
+.footer-admin-link:hover svg,
+.footer-admin-link:hover [data-lucide] {
+  transform: translateY(-1px);
+}
+
 .footer-disclaimer-note {
   width: 100%;
   font-size: 0.78rem;
